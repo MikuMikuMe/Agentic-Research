@@ -7,11 +7,11 @@ from app.services.supabase_client import get_supabase
 
 settings = get_settings()
 
-# Manager uses Pro for orchestration
+# Manager uses Flash Preview for orchestration (high speed, good reasoning)
 manager_llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-pro",
+    model="gemini-3-flash-preview", 
     google_api_key=settings.GOOGLE_API_KEY,
-    temperature=0.8 # High creativity for persona generation
+    temperature=0.8
 )
 
 class ManagerAgent:

@@ -20,17 +20,17 @@ class AgentState(TypedDict):
     critiques: List[Dict[str, str]] 
 
 # --- Model Strategy (Hybrid) ---
-# 1. Research Model (Fast/Cheap) -> Gemini Flash
+# --- Model Strategy (Hybrid - All Flash Preview now) ---
+# 1. Research Model (Fast/Cheap)
 research_llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-3-flash-preview",
     google_api_key=settings.GOOGLE_API_KEY,
     temperature=0.3
 )
 
-# 2. Writer Model (High Quality) -> Gemini Pro (if available, else Flash)
-# Ideally we check if there's a specific key or just use the same one with a different model name
+# 2. Writer Model (High Quality)
 writer_llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-pro", # Upgraded for better writing
+    model="gemini-3-flash-preview", 
     google_api_key=settings.GOOGLE_API_KEY, 
     temperature=0.7
 )

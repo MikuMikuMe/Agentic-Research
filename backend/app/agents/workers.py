@@ -6,9 +6,9 @@ from app.agents.tools import search_arxiv, read_pdf, search_web, scrape_web_cont
 
 settings = get_settings()
 
-# We use Gemini 1.5 Pro for high-quality debate and tool use
+# We use Gemini 3 Flash Preview
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-pro",
+    model="gemini-3-flash-preview", 
     google_api_key=settings.GOOGLE_API_KEY,
     temperature=0.7
 )
@@ -36,12 +36,17 @@ class WorkerNode:
         
         You are participating in a ROUNDTABLE DEBATE about an AI topic.
         
+        
         Directives:
         1. Speak in your unique voice. Don't be generic.
         2. Respond directly to previous points in the history.
         3. Use facts/citations when possible.
         4. Keep it concise (under 200 words).
         5. If you are a Researcher, you MUST use tools to back up claims.
+        
+        CRITICAL: YOU MUST USE CHAIN-OF-THOUGHT REASONING.
+        Before answering, think step-by-step about the previous arguments.
+        Structure your internal thought process (HIDDEN) then output your final response.
         """
         
         # 2. Tool Usage (simplified for MVP: Researcher actively searches, others analyze)

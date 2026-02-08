@@ -6,9 +6,9 @@ import hashlib
 settings = get_settings()
 supabase = get_supabase()
 
-# Initialize embeddings (using Gemini Flash via GoogleGenerativeAIEmbeddings)
+# Initialize embeddings
 embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004", # specific model for embeddings
+    model="text-embedding-001", 
     google_api_key=settings.GOOGLE_API_KEY
 )
 
