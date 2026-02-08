@@ -5,8 +5,56 @@ from app.agents.graph import app as agent_app
 from app.core.deduplication import check_is_duplicate, mark_as_seen
 from app.services.supabase_client import get_supabase
 import uuid
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Agentic Research API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Run Autonomous Loop
+    import asyncio
+    from app.agents.trend_spotter import TrendSpotter
+    from app.agents.manager import ManagerAgent
+    
+    print("--- Starting Autonomous Research Loop ---", flush=True)
+    
+    async def run_loop():
+        try:
+            spotter = TrendSpotter()
+            manager = ManagerAgent()
+            print("--- Loop Agents Initialized ---", flush=True)
+            
+            while True:
+                # 1. Find a topic
+                try:
+                    topic_data = spotter.find_trending_topic()
+                    if topic_data:
+                         # 2. Check Duplicates (Simple check via Supabase or just run it for MVP)
+                        # For MVP, we just run it. In prod, check DB title existence.
+                         
+                        # 3. Trigger Manager
+                        manager.run_roundtable(topic_data)
+                except Exception as e:
+                    print(f"Loop Error: {e}", flush=True)
+                    
+                # Wait for next cycle (e.g., 4 hours)
+                # For DEMO purposes, we wait 5 minutes to generate content more frequently
+                print("Sleeping for 5 minutes...", flush=True)
+                await asyncio.sleep(300) 
+        except Exception as startup_error:
+             print(f"CRITICAL: Loop Startup Failed: {startup_error}", flush=True)
+
+    # Create Task
+    loop_task = asyncio.create_task(run_loop())
+    
+    yield
+    
+    # Shutdown: Cancel Loop
+    loop_task.cancel()
+    try:
+        await loop_task
+    except asyncio.CancelledError:
+        print("--- Autonomous Research Loop Stopped ---", flush=True)
+
+app = FastAPI(title="Agentic Research API", lifespan=lifespan)
 
 # Configure CORS
 app.add_middleware(
@@ -101,38 +149,6 @@ async def trigger_research(request: ResearchRequest, background_tasks: Backgroun
     except Exception as e:
         print(f"Agent execution failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.on_event("startup")
-async def startup_event():
-    import asyncio
-    from app.agents.trend_spotter import TrendSpotter
-    from app.agents.manager import ManagerAgent
-    
-    print("--- Starting Autonomous Research Loop ---")
-    
-    async def run_loop():
-        spotter = TrendSpotter()
-        manager = ManagerAgent()
-        
-        while True:
-            # 1. Find a topic
-            try:
-                topic_data = spotter.find_trending_topic()
-                if topic_data:
-                    # 2. Check Duplicates (Simple check via Supabase or just run it for MVP)
-                    # For MVP, we just run it. In prod, check DB title existence.
-                     
-                    # 3. Trigger Manager
-                    manager.run_roundtable(topic_data)
-            except Exception as e:
-                print(f"Loop Error: {e}")
-                
-            # Wait for next cycle (e.g., 4 hours)
-            # For DEMO purposes, we wait 5 minutes to generate content more frequently
-            print("Sleeping for 5 minutes...")
-            await asyncio.sleep(300) 
-
-    asyncio.create_task(run_loop())
 
 if __name__ == "__main__":
     import uvicorn
