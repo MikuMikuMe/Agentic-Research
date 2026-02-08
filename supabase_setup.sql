@@ -31,12 +31,13 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 -- Known Items: Stores processed items for deduplication
--- Uses vector embeddings for semantic similarity matching
+-- Tracks URLs, titles, and Arxiv IDs to prevent duplicate content
 CREATE TABLE IF NOT EXISTS known_items (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   url TEXT UNIQUE,
   title TEXT,
-  embedding vector(3072), -- gemini-embedding-001 outputs 3072 dimensions
+  arxiv_id TEXT, -- Extracted Arxiv paper ID (e.g., 2401.12345)
+  embedding vector(3072), -- gemini-embedding-001 outputs 3072 dimensions (optional)
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -98,6 +99,9 @@ CREATE INDEX IF NOT EXISTS known_items_embedding_idx
 
 -- Index for URL lookups (exact match deduplication)
 CREATE INDEX IF NOT EXISTS known_items_url_idx ON known_items(url);
+
+-- Index for Arxiv ID lookups (paper deduplication)
+CREATE INDEX IF NOT EXISTS known_items_arxiv_id_idx ON known_items(arxiv_id);
 
 -- Index for thread lookups
 CREATE INDEX IF NOT EXISTS comments_thread_id_idx ON comments(thread_id);

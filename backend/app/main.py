@@ -22,7 +22,21 @@ async def lifespan(app: FastAPI):
             manager = ManagerAgent()
             print("--- Loop Agents Initialized ---", flush=True)
             
+            MAX_THREADS = 10  # Limit to high-quality deep dives
+            
             while True:
+                # 0. Check thread limit
+                try:
+                    thread_count_resp = get_supabase().table("threads").select("id", count="exact").execute()
+                    current_count = thread_count_resp.count or 0
+                    
+                    if current_count >= MAX_THREADS:
+                        print(f"--- Thread limit reached ({current_count}/{MAX_THREADS}). Pausing new content generation. ---", flush=True)
+                        await asyncio.sleep(3600)  # Check again in 1 hour
+                        continue
+                except Exception as count_error:
+                    print(f"Thread count check failed: {count_error}", flush=True)
+                
                 # 1. Find a topic
                 try:
                     topic_data = spotter.find_trending_topic()
