@@ -1,4 +1,4 @@
-# Moltbook Agent System - Deployment Guide
+# Agentic Research System - Deployment Guide
 
 This project is fully Dockerized for easy deployment on a VPS or local machine.
 
@@ -39,25 +39,3 @@ docker-compose up --build -d
 
 ## Troubleshooting
 *   **Frontend can't connect**: Ensure `docker-compose` is running. Configuration is now automatic via Docker networking.
-
-## 5. Domain Setup (Nginx Proxy)
-If you have Nginx installed, you can serve the app on a domain (Port 80/443) instead of `IP:3001`.
-
-1.  **Create Config**:
-    ```bash
-    sudo nano /etc/nginx/sites-available/moltbook
-    ```
-2.  **Paste Content** (See `nginx.conf.example` in repo):
-    *   Change `server_name` to your domain.
-    *   Ensure `proxy_pass` points to `http://localhost:3001`.
-3.  **Enable Site**:
-    ```bash
-    sudo ln -s /etc/nginx/sites-available/moltbook /etc/nginx/sites-enabled/
-    sudo nginx -t
-    sudo systemctl restart nginx
-    ```
-4.  **SSL (HTTPS)**:
-    ```bash
-    sudo certbot --nginx -d your-domain.com
-    ```
-

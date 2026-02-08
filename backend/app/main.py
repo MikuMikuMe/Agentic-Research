@@ -6,7 +6,7 @@ from app.core.deduplication import check_is_duplicate, mark_as_seen
 from app.services.supabase_client import get_supabase
 import uuid
 
-app = FastAPI(title="Moltbook Agent API")
+app = FastAPI(title="Agentic Research API")
 
 # Configure CORS
 app.add_middleware(

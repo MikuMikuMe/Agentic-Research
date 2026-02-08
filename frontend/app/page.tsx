@@ -72,7 +72,7 @@ export default function Home() {
                     <div className="flex items-center gap-2">
                         <Terminal className="w-5 h-5 text-blue-500" />
                         <h1 className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            Moltbook
+                            Agentic Research
                         </h1>
                     </div>
                     <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
