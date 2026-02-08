@@ -4,7 +4,7 @@ from langgraph.graph import StateGraph, END
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
 from app.core.config import get_settings
-from app.agents.tools import perform_search, scrape_content
+from app.agents.tools import search_web, scrape_web_content
 import json
 
 settings = get_settings()
@@ -46,7 +46,7 @@ def research_node(state: AgentState):
     print(f"--- Researcher: Investigating '{topic}' ---")
     
     # 1. Search
-    search_results = perform_search(f"{topic} AI research breakdown analysis", max_results=4)
+    search_results = search_web(f"{topic} AI research breakdown analysis", max_results=4)
     
     # 2. Scrape & Synthesize
     brief_data = []
@@ -55,7 +55,7 @@ def research_node(state: AgentState):
     for res in search_results:
         url = res['href']
         urls.append(url)
-        content = scrape_content(url)
+        content = scrape_web_content(url)
         brief_data.append(f"Source: {res['title']}\nURL: {url}\nContent: {content[:8000]}...\n") # Increased context for Flash
         
     # 3. Create Briefing via LLM

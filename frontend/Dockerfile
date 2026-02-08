@@ -1,18 +1,21 @@
-FROM node:20-alpine
-
+# Build stage
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Copy application code
 COPY . .
+RUN npm run build
 
-# Expose port
+# Production stage
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copy necessary files for Next.js runner
+# You need to ensure 'output: "standalone"' is in next.config.mjs
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
 EXPOSE 3000
-
-# Run development server
-CMD ["npm", "run", "dev"]
+CMD ["node", "server.js"]

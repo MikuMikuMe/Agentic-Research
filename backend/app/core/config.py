@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str | None = None
     
     class Config:
-        env_file = ".env"
+        env_file = ["../.env", ".env"]
+        extra = "ignore"
 
 @lru_cache()
 def get_settings():

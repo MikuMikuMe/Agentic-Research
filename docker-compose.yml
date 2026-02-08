@@ -4,25 +4,28 @@ services:
   backend:
     build: ./backend
     container_name: moltbook-backend
-    volumes:
-      - ./backend:/app
+    # volumes: - ./backend:/app  <-- Removed for production
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    env_file:
+      - .env
     restart: unless-stopped
 
   ingestion:
-    build: ./backend
+    build:
+      context: ./backend # Use backend context for ingestion too
     container_name: moltbook-ingestion
     command: [ "python", "ingestion.py" ]
-    volumes:
-      - ./backend:/app
+    # volumes: - ./backend:/app <-- Removed for production
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - API_URL=http://backend:8000/research
+    env_file:
+      - .env
     depends_on:
       - backend
     restart: unless-stopped
@@ -31,13 +34,13 @@ services:
     build: ./frontend
     container_name: moltbook-frontend
     ports:
-      - "3001:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "3000:3000" # Expose on 3000
+    # volumes: ... <-- Removed for production
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    env_file:
+      - .env
     depends_on:
       - backend
     restart: unless-stopped

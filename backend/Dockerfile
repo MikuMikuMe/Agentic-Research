@@ -14,8 +14,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Create non-root user for security
+RUN adduser --disabled-password --gecos '' appuser
+USER appuser
+
 # Expose port
 EXPOSE 8000
 
-# Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Command to run the application (No reload in prod)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

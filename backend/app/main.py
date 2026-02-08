@@ -11,7 +11,7 @@ app = FastAPI(title="Agentic Research API")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -101,6 +101,38 @@ async def trigger_research(request: ResearchRequest, background_tasks: Backgroun
     except Exception as e:
         print(f"Agent execution failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.on_event("startup")
+async def startup_event():
+    import asyncio
+    from app.agents.trend_spotter import TrendSpotter
+    from app.agents.manager import ManagerAgent
+    
+    print("--- Starting Autonomous Research Loop ---")
+    
+    async def run_loop():
+        spotter = TrendSpotter()
+        manager = ManagerAgent()
+        
+        while True:
+            # 1. Find a topic
+            try:
+                topic_data = spotter.find_trending_topic()
+                if topic_data:
+                    # 2. Check Duplicates (Simple check via Supabase or just run it for MVP)
+                    # For MVP, we just run it. In prod, check DB title existence.
+                     
+                    # 3. Trigger Manager
+                    manager.run_roundtable(topic_data)
+            except Exception as e:
+                print(f"Loop Error: {e}")
+                
+            # Wait for next cycle (e.g., 4 hours)
+            # For DEMO purposes, we wait 5 minutes to generate content more frequently
+            print("Sleeping for 5 minutes...")
+            await asyncio.sleep(300) 
+
+    asyncio.create_task(run_loop())
 
 if __name__ == "__main__":
     import uvicorn
