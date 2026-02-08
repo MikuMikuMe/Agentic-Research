@@ -8,7 +8,7 @@ supabase = get_supabase()
 
 # Initialize embeddings
 embeddings = GoogleGenerativeAIEmbeddings(
-    model="text-embedding-001", 
+    model="gemini-embedding-001", 
     google_api_key=settings.GOOGLE_API_KEY
 )
 
