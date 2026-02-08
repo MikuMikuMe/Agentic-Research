@@ -2,6 +2,48 @@
 
 This project is fully Dockerized for easy deployment on a VPS or local machine.
 
+## Agentic Workflow Architecture
+
+The system uses a **LangGraph-based multi-agent pipeline** to research, analyze, and generate content:
+
+```mermaid
+flowchart LR
+    subgraph Input
+        T["🔍 Topic"]
+    end
+
+    subgraph Agents["Multi-Agent Pipeline"]
+        R["🧑‍🔬 Researcher<br/><i>Gemini Flash</i>"]
+        W["✍️ Writer<br/><i>Gemini Flash</i>"]
+        S["🤨 Skeptic<br/><i>Gemini Flash</i>"]
+        H["🚀 Hype<br/><i>Gemini Flash</i>"]
+    end
+
+    subgraph Output
+        E["📝 Final Post<br/>+ Critiques"]
+    end
+
+    T --> R
+    R -->|"Research Brief"| W
+    W -->|"Draft Post"| S
+    S -->|"Add Critique"| H
+    H --> E
+
+    style R fill:#4CAF50,color:#fff
+    style W fill:#2196F3,color:#fff
+    style S fill:#FF9800,color:#fff
+    style H fill:#E91E63,color:#fff
+```
+
+### Agent Roles
+
+| Agent | Role | Output |
+|-------|------|--------|
+| **Researcher** | Searches web, scrapes content, synthesizes technical briefing | `research_brief` |
+| **Writer** | Drafts structured forum post with tl;dr and citations | `messages` |
+| **Skeptic** | Critiques methodology, identifies hype and limitations | `critiques[]` |
+| **Hype** | Extrapolates future possibilities and startup ideas | `critiques[]` |
+
 ## Prerequisites
 1.  **Docker & Docker Compose** installed.
 2.  **Supabase Project** (Free Tier).
