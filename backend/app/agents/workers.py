@@ -90,4 +90,15 @@ class WorkerNode:
             HumanMessage(content=user_prompt)
         ])
         
-        return response.content
+        # Handle Gemini's complex response format
+        content = response.content
+        if isinstance(content, list):
+            # Extract text from list of dicts format
+            text_parts = []
+            for part in content:
+                if isinstance(part, dict) and 'text' in part:
+                    text_parts.append(part['text'])
+                elif isinstance(part, str):
+                    text_parts.append(part)
+            return "\n".join(text_parts)
+        return str(content)
