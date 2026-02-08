@@ -1,7 +1,7 @@
 import arxiv
 import requests
 import io
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 import random
