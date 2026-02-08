@@ -57,10 +57,20 @@ class ManagerAgent:
             # Join content parts if it's a list
             raw_content = "".join([str(part) for part in raw_content])
         
-        # Clean markdown code blocks if present
-        content = str(raw_content).replace("```json", "").replace("```", "").strip()
+        # robust JSON extraction
+        import re
+        content_str = str(raw_content)
+        # Find the first '[' and the last ']'
+        start = content_str.find('[')
+        end = content_str.rfind(']')
+        
+        if start != -1 and end != -1:
+            json_str = content_str[start:end+1]
+        else:
+             json_str = content_str.replace("```json", "").replace("```", "").strip()
+
         try:
-            personas = json.loads(content)
+            personas = json.loads(json_str)
             return personas
         except:
             print("Error parsing personas, using default cast.")

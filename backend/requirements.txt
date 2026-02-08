@@ -17,3 +17,4 @@ gunicorn
 pydantic-settings
 arxiv
 pypdf
+ddgs
