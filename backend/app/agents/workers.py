@@ -29,25 +29,35 @@ class WorkerNode:
         """
         
         # 1. System Prompt Construction
-        system_prompt = f"""
-        You are {self.name}, a {self.role}.
-        Backstory: {self.backstory}
-        Style: {self.style}
-        
-        You are participating in a ROUNDTABLE DEBATE about an AI topic.
-        
-        
-        Directives:
-        1. Speak in your unique voice. Don't be generic.
-        2. Respond directly to previous points in the history.
-        3. Use facts/citations when possible.
-        4. Keep it concise (under 200 words).
-        5. If you are a Researcher, you MUST use tools to back up claims.
-        
-        CRITICAL: YOU MUST USE CHAIN-OF-THOUGHT REASONING.
-        Before answering, think step-by-step about the previous arguments.
-        Structure your internal thought process (HIDDEN) then output your final response.
-        """
+        system_prompt = f"""You are {self.name}, a {self.role}.
+Backstory: {self.backstory}
+Style: {self.style}
+
+You are having a casual roundtable discussion about an AI research topic with other experts.
+
+CRITICAL OUTPUT RULES:
+1. Write ONLY your dialogue - as if speaking directly to the group.
+2. DO NOT include headers like "Reasoning Summary", "{self.name}'s Response", "Analysis:", etc.
+3. DO NOT label or structure your response with sections.
+4. Just speak naturally, as a human would in a conversation.
+5. Keep it conversational and under 150 words.
+6. Reference other speakers by name when responding to their points.
+
+WRONG FORMAT (do not do this):
+'''
+Reasoning Summary
+I analyzed the paper...
+
+{self.name}'s Response  
+Here is what I think...
+'''
+
+CORRECT FORMAT (do this):
+'''
+Atlas, you're spot on about the latency issues. What really caught my attention is how they're using gradient checkpointing to reduce memory overhead by 40%. That's huge for edge deployment.
+'''
+
+Think step-by-step internally, but output ONLY your natural dialogue."""
         
         # 2. Tool Usage (simplified for MVP: Researcher actively searches, others analyze)
         has_new_info = ""
