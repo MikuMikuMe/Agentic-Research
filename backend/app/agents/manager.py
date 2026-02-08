@@ -51,8 +51,14 @@ class ManagerAgent:
         
         response = manager_llm.invoke([HumanMessage(content=prompt)])
         
+        # Handle potential list content (common with some Gemini versions)
+        raw_content = response.content
+        if isinstance(raw_content, list):
+            # Join content parts if it's a list
+            raw_content = "".join([str(part) for part in raw_content])
+        
         # Clean markdown code blocks if present
-        content = response.content.replace("```json", "").replace("```", "").strip()
+        content = str(raw_content).replace("```json", "").replace("```", "").strip()
         try:
             personas = json.loads(content)
             return personas
