@@ -4,45 +4,51 @@ This project is fully Dockerized for easy deployment on a VPS or local machine.
 
 ## Agentic Workflow Architecture
 
-The system uses a **LangGraph-based multi-agent pipeline** to research, analyze, and generate content:
+The system uses a **LangGraph-based multi-agent workflow** with feedback loops, conditional routing, multi-turn debate, and self-reflection:
 
 ```mermaid
-flowchart LR
-    subgraph Input
-        T["🔍 Topic"]
+flowchart TB
+    subgraph Research["🔬 Research Phase"]
+        T["🔍 Topic"] --> R["🧑‍🔬 Researcher"]
+        R --> SR["🔍 Self-Reflect"]
+        SR -->|"score < 6"| R
     end
 
-    subgraph Agents["Multi-Agent Pipeline"]
-        R["🧑‍🔬 Researcher<br/><i>Gemini Flash</i>"]
-        W["✍️ Writer<br/><i>Gemini Flash</i>"]
-        S["🤨 Skeptic<br/><i>Gemini Flash</i>"]
-        H["🚀 Hype<br/><i>Gemini Flash</i>"]
+    subgraph Writing["✍️ Writing Phase"]
+        SR -->|"score ≥ 6"| W["✍️ Writer"]
+        W --> C["📝 Critic"]
+        C -->|"needs revision"| W
     end
 
-    subgraph Output
-        E["📝 Final Post<br/>+ Critiques"]
+    subgraph Debate["💬 Multi-Turn Debate (2 rounds)"]
+        C -->|"approved"| DS["🤨 Skeptic"]
+        DS --> DH["🚀 Hype"]
+        DH -->|"round < 2"| DS
     end
 
-    T --> R
-    R -->|"Research Brief"| W
-    W -->|"Draft Post"| S
-    S -->|"Add Critique"| H
-    H --> E
+    DH -->|"round = 2"| SYN["🔄 Synthesizer"]
+    SYN --> E["📝 Final Post + Critiques"]
 
     style R fill:#4CAF50,color:#fff
+    style SR fill:#9C27B0,color:#fff
     style W fill:#2196F3,color:#fff
-    style S fill:#FF9800,color:#fff
-    style H fill:#E91E63,color:#fff
+    style C fill:#607D8B,color:#fff
+    style DS fill:#FF9800,color:#fff
+    style DH fill:#E91E63,color:#fff
+    style SYN fill:#00BCD4,color:#fff
 ```
 
 ### Agent Roles
 
 | Agent | Role | Output |
 |-------|------|--------|
-| **Researcher** | Searches web, scrapes content, synthesizes technical briefing | `research_brief` |
-| **Writer** | Drafts structured forum post with tl;dr and citations | `messages` |
-| **Skeptic** | Critiques methodology, identifies hype and limitations | `critiques[]` |
-| **Hype** | Extrapolates future possibilities and startup ideas | `critiques[]` |
+| **Researcher** | Web search, scraping, synthesizes technical brief | `research_brief` |
+| **Self-Reflect** | Rates research quality (1-10), requests revision if < 6 | `quality_score` |
+| **Writer** | Drafts forum post with tl;dr & citations | `draft_post` |
+| **Critic** | Reviews draft, can request up to 2 revisions | `reflection_feedback` |
+| **Skeptic** | Critiques methodology, counters hype | `debate_history` |
+| **Hype** | Extrapolates possibilities, counters skepticism | `debate_history` |
+| **Synthesizer** | Combines 2-round debate into final output | `critiques[]` |
 
 ## Prerequisites
 1.  **Docker & Docker Compose** installed.
