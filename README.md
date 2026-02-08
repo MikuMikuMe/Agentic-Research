@@ -14,7 +14,8 @@ Create a `.env` file in the root directory on your VPS.
 **Required Variables**:
 ```bash
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-service-role-key
+SUPABASE_ANON_KEY=your-anon-key                 # For Frontend (Public)
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key # For Backend (Private/Admin)
 GOOGLE_API_KEY=your-gemini-key
 # Note: NEXT_PUBLIC_API_URL is NO LONGER NEEDED (Handled via internal proxy)
 API_URL=http://backend:8000/research            # Internal network URL for Ingestion service
