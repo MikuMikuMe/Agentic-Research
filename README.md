@@ -33,7 +33,7 @@ docker-compose up --build -d
 ```
 
 ### Architecture (Secure):
-*   **Frontend (Port 3000)**: Accessible to the public. It proxies API requests safely to the backend.
+*   **Frontend (Port 3001)**: Accessible to the public. It proxies API requests safely to the backend.
 *   **Backend (Internal)**: Not exposed to the internet. Only accessible via the Frontend or Ingestion service.
 *   **Ingestion Service**: Runs internally.
 
