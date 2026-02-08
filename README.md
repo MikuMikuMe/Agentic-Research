@@ -39,3 +39,6 @@ docker-compose up --build -d
 
 ## Troubleshooting
 *   **Frontend can't connect**: Ensure `docker-compose` is running. Configuration is now automatic via Docker networking.
+*   **Unable to Connect (Timeout)**:
+    *   **Check Firewall**: If on VPS (AWS/DigitalOcean/Hetzner), you **MUST** open Port `3001` in your firewall settings (Security Groups / UFW).
+    *   Example UFW command: `sudo ufw allow 3001/tcp`
