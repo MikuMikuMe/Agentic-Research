@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+python-dotenv
+supabase
+langgraph
+langchain-core
+langchain-google-genai
+langchain-openai
+langchain-community
+beautifulsoup4
+aiohttp
+feedparser
+duckduckgo-search
+requests
+pydantic
+gunicorn
+pydantic-settings
