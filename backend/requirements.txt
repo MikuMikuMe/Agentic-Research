@@ -15,3 +15,5 @@ requests
 pydantic
 gunicorn
 pydantic-settings
+arxiv
+pypdf

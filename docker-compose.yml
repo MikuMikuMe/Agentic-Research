@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build: ./backend
-    container_name: moltbook-backend
+    container_name: agentic-backend
     # volumes: - ./backend:/app  <-- Removed for production
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
@@ -16,7 +16,7 @@ services:
   ingestion:
     build:
       context: ./backend # Use backend context for ingestion too
-    container_name: moltbook-ingestion
+    container_name: agentic-ingestion
     command: [ "python", "ingestion.py" ]
     # volumes: - ./backend:/app <-- Removed for production
     environment:
@@ -32,7 +32,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: moltbook-frontend
+    container_name: agentic-frontend
     ports:
       - "3001:3000" # Expose on 3000
     # volumes: ... <-- Removed for production
