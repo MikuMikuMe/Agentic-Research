@@ -9,14 +9,14 @@ This project is fully Dockerized for easy deployment on a VPS or local machine.
 
 ## 1. Environment Setup
 
-Create a `.env` file in the root directory (or use the provided `backend/.env.example` as a template). For Docker, you can pass these variables directly or use an env file.
+Create a `.env` file in the root directory on your VPS.
 
 **Required Variables**:
 ```bash
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
 GOOGLE_API_KEY=your-gemini-key
-NEXT_PUBLIC_API_URL=http://<YOUR_VPS_IP>:8000  # Important for frontend to reach backend!
+# Note: NEXT_PUBLIC_API_URL is NO LONGER NEEDED (Handled via internal proxy)
 API_URL=http://backend:8000/research            # Internal network URL for Ingestion service
 ```
 
@@ -31,11 +31,10 @@ Run the following command in the root directory:
 docker-compose up --build -d
 ```
 
-### What happens:
-*   **Backend**: Starts on port `8000`. Exposes the API.
-*   **Frontend**: Starts on port `3000`. Connects to the backend via `NEXT_PUBLIC_API_URL`.
-*   **Ingestion Service**: Starts automatically, sleeps for 12 hours, then fetches daily papers from Hugging Face and triggers the research agent.
+### Architecture (Secure):
+*   **Frontend (Port 3000)**: Accessible to the public. It proxies API requests safely to the backend.
+*   **Backend (Internal)**: Not exposed to the internet. Only accessible via the Frontend or Ingestion service.
+*   **Ingestion Service**: Runs internally.
 
 ## Troubleshooting
-*   **Frontend can't connect**: Check `NEXT_PUBLIC_API_URL`. If running locally, use `http://localhost:8000`. If on VPS, use `http://<VPS_IP>:8000`.
-*   **Ingestion fails**: Check `API_URL` variable in `docker-compose.yml`. It should point to `http://backend:8000/research` inside the Docker network.
+*   **Frontend can't connect**: Ensure `docker-compose` is running. Configuration is now automatic via Docker networking.

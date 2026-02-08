@@ -4,8 +4,6 @@ services:
   backend:
     build: ./backend
     container_name: moltbook-backend
-    ports:
-      - "8000:8000"
     volumes:
       - ./backend:/app
     environment:
@@ -38,7 +36,8 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
     depends_on:
       - backend
     restart: unless-stopped
