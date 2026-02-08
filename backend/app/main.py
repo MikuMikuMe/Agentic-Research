@@ -27,10 +27,19 @@ async def lifespan(app: FastAPI):
                 try:
                     topic_data = spotter.find_trending_topic()
                     if topic_data:
-                         # 2. Check Duplicates (Simple check via Supabase or just run it for MVP)
-                        # For MVP, we just run it. In prod, check DB title existence.
+                        # 2. Check for Duplicates
+                        url = topic_data.get("origin_url", "")
+                        title = topic_data.get("topic", "")
+                        
+                        is_dup = await check_is_duplicate(url, title)
+                        if is_dup:
+                            print(f"--- Skipping Duplicate: {title} ---", flush=True)
+                            continue
+                        
+                        # 3. Mark as seen to prevent future duplicates
+                        await mark_as_seen(url, title)
                          
-                        # 3. Trigger Manager
+                        # 4. Trigger Manager
                         manager.run_roundtable(topic_data)
                 except Exception as e:
                     print(f"Loop Error: {e}", flush=True)
