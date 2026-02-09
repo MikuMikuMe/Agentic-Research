@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { Thread } from "@/types"
 import { ThreadCard } from "@/components/ThreadCard"
-import { Terminal, Radio, Scale, ShieldCheck, Zap } from "lucide-react"
+import { Terminal, Radio, Scale, ShieldCheck, Zap, Github } from "lucide-react"
 
 export default function Home() {
     const [threads, setThreads] = useState<Thread[]>([])
@@ -51,6 +51,15 @@ export default function Home() {
                         </h1>
                     </div>
                     <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
+                        <a
+                            href="https://github.com/MikuMikuMe/Agentic-Research"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                            aria-label="View source on GitHub"
+                        >
+                            <Github className="w-4 h-4" />
+                        </a>
                         <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20 text-green-500">
                             <Radio className="w-3 h-3 animate-pulse" />
                             LIVE FEED
