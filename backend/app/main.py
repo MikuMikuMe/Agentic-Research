@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from app.models.schemas import ResearchRequest, ResearchResponse
@@ -22,7 +23,7 @@ async def lifespan(app: FastAPI):
             manager = ManagerAgent()
             print("--- Loop Agents Initialized ---", flush=True)
             
-            MAX_THREADS = 10  # Limit to high-quality deep dives
+            MAX_THREADS = int(os.getenv("MAX_THREADS", "10"))  # Configurable limit
             
             while True:
                 # 0. Check thread limit
