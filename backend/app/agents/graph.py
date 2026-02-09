@@ -7,6 +7,7 @@ from app.core.config import get_settings
 from app.agents.tools import search_web, scrape_web_content
 import json
 import re
+from datetime import datetime
 
 settings = get_settings()
 
@@ -91,11 +92,16 @@ def research_node(state: AgentState) -> dict:
         {state['reflection_feedback']}
         """
     
+    # Get current date for the briefing
+    current_date = datetime.now().strftime("%B %d, %Y")
+    
     prompt = f"""
     You are a Senior AI Researcher. Analyze the following gathered content about '{topic}'.
     Create a comprehensive, technical briefing doc.
     Focus on: NOVELTY, METHODOLOGY, and REAL-WORLD IMPACT.
     Ignore fluff/marketing.
+    
+    IMPORTANT: Today's date is {current_date}. Use this date in your briefing document.
     {feedback_context}
     
     Research Content:
