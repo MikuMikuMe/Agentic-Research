@@ -68,9 +68,9 @@ async def check_is_duplicate(url: str, title: str) -> bool:
                 return True
         
         # 4. Check threads table by normalized title
-        thread_response = supabase.table("threads").select("id, title").execute()
+        thread_response = supabase.table("threads").select("id, topic_title").execute()
         for thread in thread_response.data or []:
-            if normalize_title(thread.get("title", "")) == normalized:
+            if normalize_title(thread.get("topic_title", "")) == normalized:
                 print(f"--- Duplicate found by title in threads: {title} ---", flush=True)
                 return True
             
