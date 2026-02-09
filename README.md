@@ -65,12 +65,11 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SECRET_KEY=xxx # For Backend (Private/Admin)
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=xxx # For Frontend (Public)
 GOOGLE_API_KEY=your-gemini-key
-API_URL=http://backend:8000/research            # Internal network URL for Ingestion service
 ```
 
 ## 2. Database Initialization (One-Time)
 Run the following SQL in your **Supabase Dashboard > SQL Editor** to create the tables and functions.
-*See `supabase_schema.sql` for the full script.*
+*See `supabase_setup.sql` for the full script.*
 
 ## 3. Deploying with Docker
 Run the following command in the root directory:
