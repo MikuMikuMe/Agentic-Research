@@ -92,6 +92,43 @@ def search_arxiv(query: str, max_results: int = 3):
         print(f"Arxiv search failed: {e}")
         return []
 
+def fetch_hf_daily_papers(max_results: int = 10):
+    """
+    Fetch trending papers from the Hugging Face Daily Papers API.
+    Args:
+        max_results (int): Max papers to return.
+    Returns:
+        list: List of dicts {title, arxiv_id, summary, upvotes, pdf_url, hf_url}.
+    """
+    try:
+        headers = {'User-Agent': random.choice(USER_AGENTS)}
+        response = requests.get(
+            f"https://huggingface.co/api/daily_papers?limit={max_results}",
+            headers=headers,
+            timeout=15
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        results = []
+        for entry in data:
+            paper = entry.get("paper", {})
+            arxiv_id = paper.get("id", "")
+            if not arxiv_id:
+                continue
+            results.append({
+                "title": paper.get("title", ""),
+                "arxiv_id": arxiv_id,
+                "summary": paper.get("summary", ""),
+                "upvotes": paper.get("upvotes", 0),
+                "pdf_url": f"https://arxiv.org/pdf/{arxiv_id}",
+                "hf_url": f"https://huggingface.co/papers/{arxiv_id}",
+            })
+        return results
+    except Exception as e:
+        print(f"HuggingFace daily papers fetch failed: {e}")
+        return []
+
 def read_pdf(url: str):
     """
     Download and read a PDF file.
